@@ -85,13 +85,10 @@ public class ByteBufferWrite {
                 System.out.println("Byte Stream Write Index is:" + writeIndex);
                 //writing message to file.
                 buffer.position(writeIndex);
-                buffer.put(message.getHeader().getId().getBytes(StandardCharsets.UTF_8));
-                buffer.put("|".getBytes(StandardCharsets.UTF_8));
-                buffer.put(message.getBody().getBytes(StandardCharsets.UTF_8));
-                buffer.put("\n".getBytes(StandardCharsets.UTF_8)); //next line char
+                buffer.put(serialize(message));
+                buffer.put("\n".getBytes(StandardCharsets.UTF_8));
                 //keep track of current buffer position.
                 this.setCURRENT_BUFFER_POSITION(buffer.position());
-                fileChannel.close();
                 //record message index to in-memory.
                 INDEX.put(message.getHeader().getId(),
                         new MessageIndex(message.getHeader().getId(), writeIndex, buffer.position()));
@@ -106,7 +103,7 @@ public class ByteBufferWrite {
         }
     }
 
-    public void searchMessage() throws IOException {
+    public void searchMessage() {
         boolean isContinue = true;
         Scanner scanner = new Scanner(System.in);
         do {
@@ -128,11 +125,7 @@ public class ByteBufferWrite {
                     byte[] streamOfBytes = new byte[msgIndex.getEndPosition() - msgIndex.getStartPosition()];
                     mappedByteBuffer.position(msgIndex.getStartPosition());
                     mappedByteBuffer.get(streamOfBytes);
-                    System.out.println("*********** Search Result **************");
-                    System.out.println(new String(streamOfBytes));
-                    /*ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(streamOfBytes);
-                    ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-                    Message message = (Message) objectInputStream.readObject();
+                    Message message = (Message) deserialize(streamOfBytes);
                     if (Objects.nonNull(message)) {
                         System.out.println("********** Search Result ****************");
                         System.out.println("Message Id: " + message.getHeader().getId());
@@ -141,7 +134,8 @@ public class ByteBufferWrite {
                         message.getHeader().getNodeList().forEach(node -> {
                             System.out.print("[" + node.getName() + "]");
                         });
-                    }*/
+                        System.out.println("\n");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

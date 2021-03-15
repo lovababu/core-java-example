@@ -1,10 +1,11 @@
 package org.avol.bytebuffer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Message {
+public class Message implements Serializable {
 
     private String body;
 
@@ -26,7 +27,7 @@ public class Message {
         this.header = header;
     }
 
-    public static class Header {
+    public static class Header implements Serializable {
         private final String id = UUID.randomUUID().toString();
         private List<Node> nodeList = new ArrayList<>();
 
@@ -43,7 +44,7 @@ public class Message {
         }
     }
 
-    public static class Node {
+    public static class Node implements Serializable {
         private String id;
         private String name;
         private boolean persisted;

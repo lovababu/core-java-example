@@ -47,6 +47,8 @@ _Using a "two-dimensional" block of text_
                    SELECT "EMP_ID", "LAST_NAME" FROM "EMPLOYEE_TB"
                    WHERE "CITY" = 'INDIANAPOLIS'
                    ORDER BY "EMP_ID", "LAST_NAME";
+                   """
+    ```
     
 ## Record classes.
 [Refer](src/org/avol/jdk15/record)
